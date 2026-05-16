@@ -1,53 +1,86 @@
 "use client";
 
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial, PerspectiveCamera, Environment, Center } from "@react-three/drei";
-import { MeshDistortMaterialProps } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 function MorphingSolid() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const materialRef = useRef<any>(null);
+  const [geoIndex, setGeoIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
-  // We'll use a single geometry and morph its vertices or swap geometries.
-  // Swapping geometries is cleaner for distinct Platonic solids.
-  // Reordered from simplest (4 faces) to most complex (20 faces)
+  // Lower subdivisions to maintain "brutalist" sharp edges
   const geometries = useMemo(() => [
-    new THREE.TetrahedronGeometry(1.6),   // 4 faces
-    new THREE.BoxGeometry(1.2, 1.2, 1.2), // 6 faces
-    new THREE.OctahedronGeometry(1.4),    // 8 faces
-    new THREE.DodecahedronGeometry(1.4),  // 12 faces
-    new THREE.IcosahedronGeometry(1.4),   // 20 faces
+    new THREE.TetrahedronGeometry(1.6, 2),
+    new THREE.BoxGeometry(1.2, 1.2, 1.2, 2, 2, 2),
+    new THREE.OctahedronGeometry(1.4, 2),
+    new THREE.DodecahedronGeometry(1.4, 2),
+    new THREE.IcosahedronGeometry(1.4, 2),
   ], []);
 
-  const [geoIndex, setGeoIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useGSAP(() => {
+    if (!isTransitioning) return;
+
+    const tl = gsap.timeline({
+      onComplete: () => setIsTransitioning(false)
+    });
+
+    // The "Crystalline Pulse" Morph
+    // 1. Activation: Subtle distortion and brightness spike
+    tl.to(materialRef.current, {
+      distort: 0.5,
+      speed: 4,
+      emissiveIntensity: 1.2,
+      duration: 0.6,
+      ease: "expo.out",
+    })
+    .to(meshRef.current?.scale || {}, {
+      x: 1.1,
+      y: 1.1,
+      z: 1.1,
+      duration: 0.6,
+      ease: "expo.out",
+    }, 0)
+    // 2. The Shift: Instant swap at the peak of the pulse
+    .add(() => {
+      setGeoIndex((prev) => (prev + 1) % geometries.length);
+    })
+    // 3. Settling: Sharp snap back into the new solid
+    .to(materialRef.current, {
+      distort: 0.1,
+      speed: 1.5,
+      emissiveIntensity: 0.2,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.8)",
+    })
+    .to(meshRef.current?.scale || {}, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.8)",
+    }, ">-1.0");
+
+  }, { dependencies: [isTransitioning], scope: meshRef });
 
   useFrame((state) => {
     if (!meshRef.current) return;
     const time = state.clock.getElapsedTime();
     
-    // Smooth rotation
-    meshRef.current.rotation.x = time * 0.2;
-    meshRef.current.rotation.y = time * 0.3;
-
-    // Cycle geometry every 3 seconds
-    const newIndex = Math.floor(time / 3) % geometries.length;
-    if (newIndex !== geoIndex) {
-      setGeoIndex(newIndex);
-      
-      // Flash effect on transition
-      if (materialRef.current) {
-        gsap.to(materialRef.current, {
-          distort: 0.8,
-          duration: 0.4,
-          yoyo: true,
-          repeat: 1,
-          ease: "power2.inOut",
-        });
-      }
-    }
+    // Controlled, elegant rotation
+    meshRef.current.rotation.x = time * 0.15;
+    meshRef.current.rotation.y = time * 0.2;
   });
 
   return (
@@ -55,13 +88,13 @@ function MorphingSolid() {
       <MeshDistortMaterial
         ref={materialRef}
         color="#FFFFE3"
-        speed={1}
-        distort={0.2}
+        speed={1.5}
+        distort={0.1}
         radius={1}
         metalness={0.9}
         roughness={0.1}
         emissive="#FFFFE3"
-        emissiveIntensity={0.1}
+        emissiveIntensity={0.2}
       />
     </mesh>
   );
@@ -73,10 +106,10 @@ export default function SynthesisArtifact() {
       <Canvas dpr={[1, 2]}>
         <PerspectiveCamera makeDefault position={[0, 0, 6]} />
         <ambientLight intensity={0.2} />
-        <spotLight position={[10, 10, 10]} intensity={1.5} penumbra={1} castShadow />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8A8A8A" />
+        <spotLight position={[10, 10, 10]} intensity={3} penumbra={1} castShadow />
+        <pointLight position={[-10, -10, -10]} intensity={2} color="#8A8A8A" />
         <Center>
-          <Float speed={2} rotationIntensity={1} floatIntensity={1}>
+          <Float speed={1.5} rotationIntensity={0.6} floatIntensity={0.6}>
             <MorphingSolid />
           </Float>
         </Center>
