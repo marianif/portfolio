@@ -2,17 +2,13 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import SynthesisVisual from "../atoms/SynthesisVisual";
-import BlueprintVisual from "../atoms/BlueprintVisual";
-import MaterialVisual from "../atoms/MaterialVisual";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-type Variant = "classical" | "blueprint" | "material";
-
-export default function Synthesis({ variant = "classical" }: { variant?: Variant }) {
+export default function Synthesis() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -52,9 +48,7 @@ export default function Synthesis({ variant = "classical" }: { variant?: Variant
       ref={sectionRef}
       className="relative flex min-h-screen w-full flex-col items-start justify-center overflow-hidden bg-background px-6 py-24 md:px-16 border-b border-surface"
     >
-      {variant === "classical" && <SynthesisVisual />}
-      {variant === "blueprint" && <BlueprintVisual />}
-      {variant === "material" && <MaterialVisual />}
+      <SynthesisVisual />
       
       <div className="relative z-10 max-w-5xl">
         <h2 
@@ -82,7 +76,7 @@ export default function Synthesis({ variant = "classical" }: { variant?: Variant
           <div className="flex items-center gap-4">
             <div className="h-[1px] w-12 bg-primary" />
             <span className="font-mono text-xs uppercase tracking-widest text-primary">
-              The Parallel Track: {variant.toUpperCase()}
+              The Parallel Track
             </span>
           </div>
           <p className="font-sans text-lg leading-relaxed text-ash md:text-xl">
