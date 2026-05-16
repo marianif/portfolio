@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
+@theme {
+  /* Colors - Brutalist Ink Palette (OKLCH) */
+  --color-primary: oklch(98% 0.02 90); /* Antique Bone #FFFFE3 equivalent */
+  --color-background: oklch(15% 0.005 240); /* Deep Ink #0E0E0E */
+  --color-surface: oklch(20% 0.005 240); /* Soft Charcoal #161616 */
+  --color-ghost: oklch(96% 0.005 240); /* Ghost White #F2F2F2 */
+  --color-ash: oklch(60% 0.005 240); /* Muted Ash #8A8A8A */
+
+  /* Typography */
+  --font-display: var(--font-clash), var(--font-geist-sans), sans-serif;
+  --font-sans: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-background);
+  --foreground: var(--color-ghost);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: color-mix(in oklch, var(--color-ghost), transparent 90%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-background);
+  color: var(--color-ghost);
+  scroll-behavior: initial; /* Lenis handles smoothing */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-ghost);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
