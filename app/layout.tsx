@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import CustomCursor from "@/components/atoms/CustomCursor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -65,6 +66,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${clashDisplay.variable} h-full antialiased selection:bg-primary selection:text-background`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <CustomCursor />
         {children}
       </body>
     </html>
