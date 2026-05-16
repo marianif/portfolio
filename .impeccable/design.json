@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-16T15:43:00Z",
+  "title": "Design System: Brutalist Ink",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Antique Bone", "canonical": "#FFFFE3", "tonalRamp": ["#33332D", "#66665B", "#999988", "#CCCCB6", "#FFFFE3", "#FFFFEA", "#FFFFF1", "#FFFFF8"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Deep Ink", "canonical": "#0E0E0E" },
+      "neutral-surface": { "role": "neutral", "displayName": "Soft Charcoal", "canonical": "#161616" },
+      "neutral-text": { "role": "neutral", "displayName": "Ghost White", "canonical": "#F2F2F2" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and major section headers only." },
+      "body": { "displayName": "Body", "purpose": "Narrative and descriptive text." }
+    },
+    "motion": [
+      { "name": "weighted-reveal", "value": "expo.out", "purpose": "Default easing for kinetic entrances." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "High-impact CTA using Antique Bone.",
+      "html": "<button class=\"ds-btn-primary\">EXPLORE CRAFT</button>",
+      "css": ".ds-btn-primary { background: #FFFFE3; color: #0E0E0E; padding: 12px 32px; font-family: 'Geist', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border: none; border-radius: 2px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1); } .ds-btn-primary:hover { transform: translateY(-2px); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Brutalist Ink",
+    "overview": "A digital expression of the transition from static documentation to kinetic innovation. Content feels carved out of darkness.",
+    "keyCharacteristics": ["Inky Depths", "Structural Typography", "Weighted Velocity", "Technical Refinement"],
+    "dos": ["Do use fluid typography", "Do ensure all motion has a 'weighted' feel"],
+    "donts": ["Don't use pure #000 or #FFF", "Don't use side-stripe borders or bouncy animations"]
+  }
+}
